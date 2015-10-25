@@ -1,0 +1,25 @@
+[
+	{
+		"file" : "GalwayCity_OpenData_CarParking.json",
+		"name" : "Car parks in Galway" 
+	},
+	{
+		"file" : "GalwayCity_OpenData_ParkingMeters.json",
+		"name" : "Parking meters in Galway",
+		"columns" : {
+			"name" : "LOCATION",
+			"x" : "X",
+			"y" : "Y"
+		},
+		"dbtype" : "sqlite3"
+	},
+	{
+		"file" : "GalwayCity_OpenData_CityParks.json",
+		"name" : "Galway city car parks",
+		"columns" : {
+			"name" : "NAME",
+			"x" : "Long",
+			"y" : "Lat"
+		}
+	}
+]

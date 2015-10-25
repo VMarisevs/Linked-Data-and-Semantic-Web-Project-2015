@@ -12,7 +12,13 @@ var app = express();
 	console.log("Loading Config file...");
 	require('./config.js');
 
-
+/*
+ *	Loading db
+ */
+ 
+	console.log("Loading Db files...");
+	require('./initdb.js');
+	
 /*
  * Starting the server
  */

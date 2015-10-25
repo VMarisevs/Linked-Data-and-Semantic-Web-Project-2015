@@ -31,3 +31,6 @@ In my API I have selected few datasets from [data.gov.ie](https://data.gov.ie/da
 
 - [Package.json example](http://browsenpm.org/package.json)
 - [Git cheat sheet](https://training.github.com/kit/downloads/github-git-cheat-sheet.pdf)
+- [SQLite3 commands](http://blog.modulus.io/nodejs-and-sqlite)
+- [Dividing all functions into separate files](http://stackoverflow.com/questions/5797852/in-node-js-how-do-i-include-functions-from-my-other-files)
+- [Swap keys and values in JavaScript array](http://stackoverflow.com/questions/23013573/swap-key-with-value-json) *used in ./etc/sqlite3db.js*
