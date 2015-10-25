@@ -21,5 +21,13 @@ In my API I have selected few datasets from [data.gov.ie](https://data.gov.ie/da
 
 ## How to Query the API
 
+## File structure
+
+> - **./runner.js** *- this is a main runner file*
+> - **./etc/config.js** *- configurable constats for this application*
+> - **./etc/service.js** *- server runner *
 
 ## References
+
+- [Package.json example](http://browsenpm.org/package.json)
+- [Git cheat sheet](https://training.github.com/kit/downloads/github-git-cheat-sheet.pdf)
