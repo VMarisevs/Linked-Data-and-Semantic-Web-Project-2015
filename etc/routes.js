@@ -52,10 +52,12 @@ function DefineRoutesImpl(varExpress){
 		});
 		
 		
-		// curl.exe -X PUT --data "id=44" http://localhost:8000/GalwayCity_OpenData_CarParking/insert
+		// curl.exe -X PUT --data "x=1&y=2&name=new Record&type=some Type&no_spaces=200&lat=12&long=33&eastitm=32&northitm=22&eastig=321&northig=432" http://localhost:8000/GalwayCity_OpenData_CarParking/insert
 		varExpress.put( "/" + route + "/insert", function(req,res){
-			console.log(req.body.id);
-			//res.json(req.body.id);
+			// requesting put-record.js file
+			var putRecord = require('./put-record.js');
+			//running insert function
+			putRecord.InsertRecord( database, req.body, res);
 		});
 		
 		

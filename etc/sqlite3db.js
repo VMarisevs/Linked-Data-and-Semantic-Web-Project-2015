@@ -18,6 +18,12 @@ module.exports = {
 	SelectRecords : function (database, res){
 		var result = SelectRecordsImpl(database, res);
 		return result;
+	},
+	
+	// Insert record into database
+	InsertRecord : function(database, record, res){
+		var result = InsertRecordImpl(database, record, res);
+		return result;
 	}
   
 };
@@ -292,6 +298,61 @@ function SelectRecordsImpl(database, res){
 		
 		res.json(rows);
 	});
+	// closing db connection
+	db.close();	
+}
+
+function InsertRecordImpl(database, record, res){
+	
+	// getting file path for this database
+	var file = getFile(database);
+	// requiring sqlite3 module
+	var sqlite3 = require("sqlite3").verbose();
+	// opening connection to database
+	var db = new sqlite3.Database(file);
+	
+	// defining variables that will make dynamic db requests
+	var sqlColumns = "";
+	var sqlValues = "";
+	// sqlite3 works only with parametric arrays -> {}
+	var sqlParams = {};
+	
+	for (key in record){
+		// if id is inserted, it will be ignored, because db will automatically generate new id for record
+		if (key != "id"){
+			// preparing sql columns to be inserted into sql statement
+			if (sqlColumns != "")
+				sqlColumns += ",";
+			sqlColumns += key;
+			
+			// preparing sql values to be inserted into sql statement
+			if (sqlValues != "")
+				sqlValues += ",";			
+			sqlValues += "@" + key;
+			
+			// preparing parametric array to be passed to sqlite3
+			sqlParams["@"+key] = record[key];
+		}		
+	}	
+	
+	// preparing statement to be executed
+	var sqlStatement = "INSERT INTO " + database.table
+						+ "\n(" + sqlColumns + ")"
+						+ "\n VALUES "
+						+ "\n(" + sqlValues + ")";
+	
+	// shows insertions in the console 
+	if (SHOW_INSERT_INTO_TABLE)
+		console.log(sqlStatement);
+
+	// running statement
+	db.run(sqlStatement, sqlParams, function(err,row){
+		if (err != null)
+			console.log(err);
+	});
+
+	
+	
 	// closing db connection
 	db.close();	
 }
