@@ -2,10 +2,23 @@
 // allows to access this function outside the scope
 module.exports = {
 	
-  CreatingDbFile: function (database) {	  
-	// calling implementation function and delegating all work to it
-    CreatingDbFileImpl(database);
-  }
+	// creating db bin files and preparing API to work
+	CreatingDbFile : function (database){	  
+		// calling implementation function and delegating all work to it
+		CreatingDbFileImpl(database);
+	},
+  
+	// Selecting one record from database
+	SelectRecord : function (database, id, res){
+		var result = SelectRecordImpl(database, id, res);
+		return result;
+	},
+
+	// Selecting all records from database
+	SelectRecords : function (database, res){
+		var result = SelectRecordsImpl(database, res);
+		return result;
+	}
   
 };
 
@@ -230,6 +243,65 @@ function InsertRecordSet(db, database, data){
 		});
 		
 	});
+}
+
+function SelectRecordImpl(database, id, res){
+	
+	// getting file path for this database
+	var file = getFile(database);
+	// requiring sqlite3 module
+	var sqlite3 = require("sqlite3").verbose();
+	// opening connection to database
+	var db = new sqlite3.Database(file);
+	
+	// preparing statement to be executed
+	var sqlStatement = "SELECT * FROM " + database.table + " WHERE id = @id";
+
+	// preparing parameter id to be passed to sqlite3
+	var sqlParam = {'@id' : id};
+
+	// executing statement and returning to request/result in json format
+	db.all(sqlStatement,sqlParam, function(err,row){
+		// displaying request in console, can be redefined in config.js
+		if (SHOW_REQUESTED_RECORDS)
+			console.log(row);
+		
+		res.json(row);
+	});
+	// closing db connection
+	db.close();	
+}
+
+function SelectRecordsImpl(database, res){
+	
+	// getting file path for this database
+	var file = getFile(database);
+	// requiring sqlite3 module
+	var sqlite3 = require("sqlite3").verbose();
+	// opening connection to database
+	var db = new sqlite3.Database(file);
+	
+	// preparing statement to be executed
+	var sqlStatement = "SELECT * FROM " + database.table;
+
+	// executing statement and returning to request/result in json format
+	db.all(sqlStatement, function(err,rows){
+		// displaying request in console, can be redefined in config.js
+		if (SHOW_REQUESTED_RECORDS)
+			console.log(rows);
+		
+		res.json(rows);
+	});
+	// closing db connection
+	db.close();	
+}
+
+function getFile(database){
+	// requiring file stream
+	var fs = require("fs");
+	// file path
+	var file = BIN_FOLDER + database.table + SQLITE3_BIN_TYPE;
+	return file;
 }
 
 

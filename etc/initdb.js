@@ -39,6 +39,12 @@ function LoadConfigFile(){
 				break;
 				
 			default :
+				/*
+				 *	WARN in case "dbtype" is not defined, I will do it for user
+				 */
+				 
+				database.dbtype = "sqlite3";
+				
 				// incase of mistake/undefined database type
 				sqlite3db.CreatingDbFile(database);
 				break;

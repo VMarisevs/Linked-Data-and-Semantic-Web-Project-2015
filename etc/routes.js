@@ -14,9 +14,11 @@ function DefineRoutesImpl(varExpress){
 	varExpress.use(bodyParser.json()); // support json encoded bodies
 	varExpress.use(bodyParser.urlencoded({ extended: true }));
 
+	// default route which displays all database in API
 	varExpress.get('/',function(req,res){
 		res.json(DATABASES);
 	});
+	
 	// defining routes for each of the databases
 	DATABASES.forEach(function(database){
 		/*
@@ -27,32 +29,45 @@ function DefineRoutesImpl(varExpress){
 		 *	DELETE -> will be resposible for deleting records from database
 		 */
 		 
-		var route = "/" + database.table;
+		var route = database.table;
+		
 		
 		// This route will return all records from database
-		varExpress.get(route, function(req,res){
-			res.json(database);
+		// http://localhost:8000/GalwayCity_OpenData_CarParking
+		varExpress.get("/" + route, function(req,res){
+			// requesting get-records.js file
+			var getRecord = require('./get-records.js');
+			// running GetRecords function and passing database array, and result
+			getRecord.GetRecords( database, res);
 		});
+		
 		
 		// This route will return selected record from database
-		varExpress.get(route +"/:id", function(req,res){
-			res.json(req.params.id);
+		// http://localhost:8000/GalwayCity_OpenData_CarParking/2
+		varExpress.get( "/" + route +"/:id", function(req,res){
+			// requesting get-record.js file
+			var getRecord = require('./get-record.js');
+			// running GetRecord function and passing database array, and result
+			getRecord.GetRecord( database, req.params.id, res);			
 		});
+		
 		
 		// curl.exe -X PUT --data "id=44" http://localhost:8000/GalwayCity_OpenData_CarParking/insert
-		varExpress.put(route + "/insert", function(req,res){
+		varExpress.put( "/" + route + "/insert", function(req,res){
 			console.log(req.body.id);
 			//res.json(req.body.id);
 		});
+		
 		
 		// curl.exe -X POST --data "id=11" http://localhost:8000/GalwayCity_OpenData_CarParking/update
-		varExpress.post(route + "/update", function(req,res){
+		varExpress.post( "/" + route + "/update", function(req,res){
 			console.log(req.body.id);
 			//res.json(req.body.id);
 		});
 		
 		
-		varExpress.delete(route + "/delete", function(req,res){
+		// curl.exe -X DELETE --data "id=11" http://localhost:8000/GalwayCity_OpenData_CarParking/delete
+		varExpress.delete( "/" + route + "/delete", function(req,res){
 			console.log(req.body.id);
 			//res.json(req.body.id);
 		});

@@ -31,8 +31,11 @@ GLOBAL.DATASET_FOLDER = "./data/datasets/";
  *	console notifications
  */
 
-// create table statements
+// create table statements in console
 GLOBAL.SHOW_CREATE_TABLE = false;
 
-// show insert statements
+// show insert statements in console
 GLOBAL.SHOW_INSERT_INTO_TABLE = false;
+
+// show requested records in console
+GLOBAL.SHOW_REQUESTED_RECORDS = false;
