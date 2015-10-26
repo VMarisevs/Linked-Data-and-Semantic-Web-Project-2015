@@ -7,6 +7,13 @@ var express = require('express');
 var app = express();
 
 /*
+ *	Allows to access public folder while server running
+ */
+	var path = __dirname.slice(0,__dirname.length-4);
+	app.use(express.static(path + "/public"));
+	
+	
+/*
  *	Loading configuration file
  */
 	console.log("Loading Config file...");
@@ -22,7 +29,9 @@ var app = express();
  *	Defining routes
  */	
 	var routes = require('./routes.js');
-	routes.DefineRoutes(app);
+	routes.DefineRoutes(app, express);
+
+	
 	
 /*
  * Starting the server

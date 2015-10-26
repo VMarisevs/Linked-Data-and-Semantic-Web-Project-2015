@@ -16,7 +16,10 @@ function DefineRoutesImpl(varExpress){
 
 	// default route which displays all database in API
 	varExpress.get('/',function(req,res){
-		res.json(DATABASES);
+		// passing database to main page
+		res.locals.databases = DATABASES;
+		// rendering main page
+		res.render('index.ejs', { put: true});
 	});
 	
 	// defining routes for each of the databases

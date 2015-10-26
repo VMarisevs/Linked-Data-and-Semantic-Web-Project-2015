@@ -1,0 +1,80 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		
+		<title>Title</title>
+		
+		<% // my defined css styles %>
+			<link href="/css/style.css" rel="stylesheet" type="text/css">
+			
+		<% // import Bootstrap libraries %>
+			<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+			<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+			<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+			
+		<% // import jQuery libraries %>
+			<link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+			<script src="//code.jquery.com/jquery-1.10.2.js"></script>
+			<script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+			
+		<% // index page js %>
+			<script src="/js/index.js"></script>
+			
+			<script>
+				jsDatabases = <%- JSON.stringify(databases) %>;
+			</script>
+	</head>
+	<body>
+		<% JSON.stringify(databases) %>
+		
+		<div class="top-container"></div>
+		
+		
+		<div class="menu-container">
+			<ul class="nav nav-tabs menu-ul">
+				<li role="presentation" id="Home-button" class="active"><a href="#"  onclick="MoveBookmark('Home-button');">Home</a></li>
+				
+				<% for (key in databases){ %>
+					<li role="presentation" id="<%=databases[key].table %>-button"><a href="#"  onclick="MoveBookmark('<%=databases[key].table %>-button');" ><%=databases[key].name %></a></li>
+				<% } %>
+			</ul>
+		</div>
+		
+		<div class="container" id="main-body">
+			
+			<% // Displaying all contents of API%>
+			<div id="home-content">
+				<% for (key in databases) { %>
+					<div class="container round-container">
+						<table class="table table-row-shrink">
+							<caption class="table table-row-shrink"><%=databases[key].name %></caption>
+							<thead class="table table-row-shrink">
+								<tr>
+									<th class="table-row-shrink">Column</th>
+									<th class="table-row-shrink">Type</th>
+								</tr>
+							</thead>
+							
+							<% for (colkey in databases[key].columns) { %>
+								<tbody class="table table-row-shrink">
+									<tr>
+										<td class="table-row-shrink"><%=databases[key].columns[colkey].column  %></td>
+										<td class="table-row-shrink"><%=databases[key].columns[colkey].type  %></td>
+									</tr>
+								</tbody>
+							<% } %>
+						</table>
+					</div>
+				<% } %>
+			</div>
+			
+			<div id="table-content">
+				Hey this is table content
+			</div>
+			
+		</div>
+		
+	
+	</body>
+</html>

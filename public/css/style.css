@@ -1,0 +1,30 @@
+.top-container{
+	height : 80px;
+}
+.round-container{
+	border-radius: 25px;
+	border: 2px solid #d3d3d3;
+	margin: 50px 50px 50px 50px;
+	max-width :500px;
+}
+
+.table-row-shrink{
+	white-space: nowrap;
+	max-width:100%;
+}
+
+.menu-container{
+	text-align : center;
+}
+
+.menu-ul{
+	display: inline-block;
+}
+
+#table-content{
+	display:none;
+}
+
+#main-body{
+
+}
