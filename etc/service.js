@@ -22,5 +22,8 @@ var app = express();
 /*
  * Starting the server
  */
-	var server = app.listen(SERVICE_PORT);
-	console.log("Server is successfully loaded...");
+	var server = app.listen(SERVICE_PORT, function(err){
+		if (!err)
+			console.log("Server is successfully loaded...");
+	});
+	

@@ -27,7 +27,7 @@ GLOBAL.DATASET_FOLDER = "./data/datasets/";
  */
 
 // create table statements
-GLOBAL.SHOW_CREATE_TABLE = true;
+GLOBAL.SHOW_CREATE_TABLE = false;
 
 // show insert statements
-GLOBAL.SHOW_INSERT_INTO_TABLE = true;
+GLOBAL.SHOW_INSERT_INTO_TABLE = false;

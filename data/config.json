@@ -10,8 +10,7 @@
 			"name" : "LOCATION",
 			"x" : "X",
 			"y" : "Y"
-		},
-		"dbtype" : "sqlite3"
+		}
 	},
 	{
 		"file" : "GalwayCity_OpenData_CityParks.json",
@@ -20,6 +19,7 @@
 			"name" : "NAME",
 			"x" : "Long",
 			"y" : "Lat"
-		}
+		},
+		"dbtype" : "sqlite3"
 	}
 ]

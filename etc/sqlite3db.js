@@ -17,10 +17,15 @@ function CreatingDbFileImpl(database){
 
 	// slicing the .json file name, to get name without .json
 	var FileName = database.file.slice(0,database.file.length-5);
+	/*
+	 *	WARN Global Changes!
+	 *	creating new variable with table name
+	 */
+		database.table = database.file.slice(0,database.file.length-5);
 	
 	// requiring file stream
 	var fs = require("fs");
-	var file = BIN_FOLDER + FileName + SQLITE3_BIN_TYPE;
+	var file = BIN_FOLDER + database.table + SQLITE3_BIN_TYPE;
 	
 	// checking if the file exists on based path
 	// remove ! -> just for testing purp
@@ -35,10 +40,10 @@ function CreatingDbFileImpl(database){
 	}
 	
 	// calling function to create db
-	CreateDb(database, file, FileName);
+	CreateDb(database, file);
 };
 
-function CreateDb(database,  file, fileName){
+function CreateDb(database,  file){
 	
 	// requiring file stream
 	var fs = require('fs');	
@@ -65,39 +70,57 @@ function CreateDb(database,  file, fileName){
 		// array of columns that will be used to create table
 		var columns = [];
 		// defining primary key column
-		columns.push("'id' INTEGER PRIMARY KEY AUTOINCREMENT");
-		
+		columns.push({
+			"column" : "id",
+			"type" : "INTEGER PRIMARY KEY AUTOINCREMENT"
+			});
+
 		// user predefined columns in config.json
-		var definedCol = swap(database.columns);
+		database.userdef = swap(database.columns);
 		
 		// looping through first record and looking for columns that we will use to add into db
 		for (dataKey in data[0]){
 			// if this column is defined by user,
 			// there are just 2 that I am interested in (x,y to be saved as float in db)
-			if (dataKey in definedCol){
-				switch(definedCol[dataKey]){
+			if (dataKey in database.userdef){
+				var defcol = database.userdef[dataKey];
+				switch(defcol){
 					case "x":
-						columns.push("'"+ definedCol[dataKey] +"' FLOAT");
+						columns.push({
+							"column" : database.userdef[dataKey].toLowerCase(),
+							"type" : "FLOAT"
+						});
 						break;
 					case "y":
-						columns.push("'"+ definedCol[dataKey] +"' FLOAT");
+						columns.push({
+							"column" : database.userdef[dataKey].toLowerCase(),
+							"type" : "FLOAT"
+						});
 						break;
 					default :
-						columns.push("'" + definedCol[dataKey] + "' VARCHAR(255)");
+						columns.push({
+							"column" : database.userdef[dataKey].toLowerCase(),
+							"type" : "VARCHAR(255)"
+						});
 						break;
 				}
-			} 
-			// in case user didn't defined x,y in config.json
-			else if (dataKey.toLowerCase() == "x" || dataKey.toLowerCase() == "y" ){
-				columns.push("'"+ dataKey.toLowerCase() +"' FLOAT");
-			} 
-			// in case user didn't define "name" column and making this name to lowercase
-			else if (dataKey.toLowerCase() == "name"){
-				columns.push("'" + dataKey.toLowerCase() + "' VARCHAR(255)");
-			} 
-			// if nothing was defined I am adding this column into table as well
-			else if (dataKey != "id"){
-				columns.push("'" + dataKey + "' VARCHAR(255)");
+			} else {
+				// if data type is not defined by user,
+				// all numeric assign as floats and all string as varchar
+				switch(typeof(data[0][dataKey])){
+					case "number":
+						columns.push({
+							"column" : dataKey.toLowerCase(),
+							"type" : "FLOAT"
+						});
+						break;
+					case "string":
+						columns.push({
+							"column" : dataKey.toLowerCase(),
+							"type" : "VARCHAR(255)"
+						});
+						break;
+				}
 			}
 				
 		}
@@ -105,17 +128,16 @@ function CreateDb(database,  file, fileName){
 		// preparing statement
 		var sqlStatement = "";
 		// concatinating columns into statemnt
-		columns.forEach(function(col){
-			
+		for (col in columns){
 			// if statement is not empty add comma
 			if (sqlStatement!=""){
 				sqlStatement += ",";
 			}
-			sqlStatement += "\n" + col;
-		});
+			sqlStatement += "\n" + columns[col].column + " " + columns[col].type;
+		}
 		
 		// wrapping around sql syntax create table statement
-		sqlStatement = "\nCREATE TABLE IF NOT EXISTS " + fileName 
+		sqlStatement = "\nCREATE TABLE IF NOT EXISTS " + database.table 
 						+"\n("
 						+ sqlStatement
 						+"\n)";
@@ -127,11 +149,93 @@ function CreateDb(database,  file, fileName){
 		// running statement
 		db.run(sqlStatement);
 		
+		/*
+		 * WARN Global Changes!
+		 *	overriding columns into better structure
+		 */
+			database.columns = columns;
+		
+		
+		
+		
+	});
+	
+	// checking if there is any records in table
+	// if not, then adding default from .json file
+	db.all("SELECT * FROM " + database.table, function(err,rows){
+
+		if (rows.length == 0)
+			// Inserting record set into db 
+			InsertRecordSet(db, database, data);
 	});
 	
 	db.close();
 }
 
+function InsertRecordSet(db, database, data){
+	var sqlColumns = "";
+	var sqlValues = "";
+	
+	// creating a prepared statement with defined index using @
+	for (col in database.columns){
+		// concatinating column names into one string
+		if (sqlColumns != ""){
+			sqlColumns += ",";
+		}		
+		sqlColumns += database.columns[col].column;
+		
+		// concatinating row value indexes into one string 
+		if (sqlValues != ""){
+			sqlValues += ",";
+		}
+		sqlValues += " @"+database.columns[col].column;
+	}
+	
+	// concatinating whole prepared statement
+	var sqlStatement = "INSERT INTO " + database.table
+		+ "(" + sqlColumns + ") VALUES "
+		+"(" + sqlValues +")";
+	
+	// for each data row in .json
+	// defining array with keys and values
+	// to populate the table
+	data.forEach(function (row){
+		
+		// default parameter id = null -> it is autoinc
+		var sqlParams = {'@id': null};
+		
+		for( cell in row){
+			// separating if user defined the column or not
+			// and pushing values into array
+			if (cell in database.userdef){
+				var key = "@" + database.userdef[cell].toLowerCase();
+				sqlParams[key] = row[cell];				
+			} else {
+				var key = "@" + cell.toLowerCase();
+				sqlParams[key] = row[cell];	
+			}
+			
+		}
+
+		// running concat statement with array{key:value}
+		db.run(sqlStatement,sqlParams,function(err){
+			// if any error occured they can be displayed in console
+			// or we can see prepared sql statement
+			if (SHOW_INSERT_INTO_TABLE){
+				console.log(
+					(err) ? err : sqlStatement
+				);				
+			}
+			
+		});
+		
+	});
+}
+
+
+/*
+ *	[This function was borrowed] (http://stackoverflow.com/questions/23013573/swap-key-with-value-json)
+ */
 // swap keys and values
 function swap(json){
   var ret = {};
