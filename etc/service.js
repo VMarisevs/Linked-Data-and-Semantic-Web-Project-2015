@@ -15,9 +15,14 @@ var app = express();
 /*
  *	Loading db
  */
- 
-	console.log("Loading Db files...");
-	require('./initdb.js');
+	var initdb = require('./initdb.js');
+	initdb.DatabaseInit();
+	
+/*
+ *	Defining routes
+ */	
+	var routes = require('./routes.js');
+	routes.DefineRoutes(app);
 	
 /*
  * Starting the server

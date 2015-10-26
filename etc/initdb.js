@@ -1,19 +1,29 @@
 
-// Loading db sqlite3 module
-var sqlite3db = require('./sqlite3db.js');
+// allows to access this function outside the scope
+module.exports = {
+	
+  DatabaseInit: function () {	  
+	// calling function to load config file and create new tables
+    LoadConfigFile();
+  }
+  
+};
 
 // running function to load configuration file .json
 LoadConfigFile();
 
 function LoadConfigFile(){
+	// Loading db sqlite3 module
+	var sqlite3db = require('./sqlite3db.js');
+
 	// requiring file stream
 	var fs = require("fs");
 	
 	// loading configuration file with database descriptions	
-	var dblist = JSON.parse(fs.readFileSync( CONFIG_FILE ,'utf8'));
+	DATABASES = JSON.parse(fs.readFileSync( CONFIG_FILE ,'utf8'));
 	
 	// looping through all defined databases, and calling functions to create binary files
-	dblist.forEach(function(database){
+	DATABASES.forEach(function(database){
 		
 		/*
 		 *	if database type is not defined by user or there is a mistake,

@@ -4,7 +4,12 @@ GLOBAL.SERVICE_PORT = 8000;
 
 // global config path
 GLOBAL.CONFIG_FILE = "./data/config.json";
+/*
+ *	WARN Array that contains information about databases
+ */
 
+ GLOBAL.DATABASES;
+ 
 /*
  *	file types
  */
