@@ -186,9 +186,6 @@ function CreateDb(database,  file){
 		 */
 			database.columns = columns;
 		
-		
-		
-		
 	});
 	
 	// checking if there is any records in table
