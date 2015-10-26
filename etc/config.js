@@ -38,7 +38,10 @@ GLOBAL.SHOW_CREATE_TABLE = false;
 GLOBAL.SHOW_INSERT_INTO_TABLE = false;
 
 // show record updates in console
-GLOBAL.SHOW_RECORD_UPDATES = true;
+GLOBAL.SHOW_RECORD_UPDATES = false;
+
+// show delete record statement in console
+GLOBAL.SHOW_DELETE_RECORD = true;
 
 // show requested records in console
 GLOBAL.SHOW_REQUESTED_RECORDS = false;

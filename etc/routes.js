@@ -70,10 +70,12 @@ function DefineRoutesImpl(varExpress){
 		});
 		
 		
-		// curl.exe -X DELETE --data "id=11" http://localhost:8000/GalwayCity_OpenData_CarParking/delete
+		// curl.exe -X DELETE --data "id=35" http://localhost:8000/GalwayCity_OpenData_CarParking/delete
 		varExpress.delete( "/" + route + "/delete", function(req,res){
-			console.log(req.body.id);
-			//res.json(req.body.id);
+			// requesting delete-record.js file
+			var deleteRecord = require('./delete-record.js');
+			//running delete record function
+			deleteRecord.DeleteRecord( database, req.body.id, res);
 		});
 		
 	});

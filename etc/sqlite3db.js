@@ -30,6 +30,12 @@ module.exports = {
 	UpdateRecord : function(database, record, res){
 		var result = UpdateRecordImpl(database, record, res);
 		return result;
+	},
+	
+	// Delete record from database
+	DeleteRecord : function(database, record, res){
+		var result = DeleteRecordImpl(database, record, res);
+		return result;
 	}
   
 };
@@ -367,6 +373,7 @@ function InsertRecordImpl(database, record, res){
 }
 
 function UpdateRecordImpl(database, record, res){
+	
 	// getting file path for this database
 	var file = getFile(database);
 	// requiring sqlite3 module
@@ -412,9 +419,10 @@ function UpdateRecordImpl(database, record, res){
 				// if there is any errors, returning stack
 				console.log(err);
 				res.json(err);
-			}else 
-				// returning response oK
-				res.json("ok");
+			}else {
+				// returning changes as response
+				res.json({'changes' : this.changes});
+			}
 		});
 	} else{
 		res.json("ERR! No id provided or no rows to be changed.. Param count:" + Object.keys(sqlParams).length);
@@ -425,6 +433,37 @@ function UpdateRecordImpl(database, record, res){
 	db.close();	
 }
 
+function DeleteRecordImpl(database, id, res){
+	
+	// getting file path for this database
+	var file = getFile(database);
+	// requiring sqlite3 module
+	var sqlite3 = require("sqlite3").verbose();
+	// opening connection to database
+	var db = new sqlite3.Database(file);
+	
+	var sqlParam = {'@id' : id };
+	
+	var sqlStatement = "DELETE FROM " + database.table +" WHERE id = @id ";
+	// shows delete statement in the console 
+	if (SHOW_DELETE_RECORD)
+		console.log(sqlStatement);
+	
+	// running statement
+	db.run(sqlStatement, sqlParam, function(err,row){
+		if (err != null){
+			// if there is any errors, returning stack
+			console.log(err);
+			res.json(err);
+		}else {
+			// returning changes as response
+			res.json({'changes' : this.changes});
+		}			
+	});
+
+	// closing db connection
+	db.close();		
+}
 
 function getFile(database){
 	// requiring file stream
