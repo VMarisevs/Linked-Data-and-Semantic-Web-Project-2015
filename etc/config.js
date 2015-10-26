@@ -37,5 +37,8 @@ GLOBAL.SHOW_CREATE_TABLE = false;
 // show insert statements in console
 GLOBAL.SHOW_INSERT_INTO_TABLE = false;
 
+// show record updates in console
+GLOBAL.SHOW_RECORD_UPDATES = true;
+
 // show requested records in console
 GLOBAL.SHOW_REQUESTED_RECORDS = false;

@@ -24,6 +24,12 @@ module.exports = {
 	InsertRecord : function(database, record, res){
 		var result = InsertRecordImpl(database, record, res);
 		return result;
+	},
+	
+	// Update record in database
+	UpdateRecord : function(database, record, res){
+		var result = UpdateRecordImpl(database, record, res);
+		return result;
 	}
   
 };
@@ -336,7 +342,7 @@ function InsertRecordImpl(database, record, res){
 	}	
 	
 	// preparing statement to be executed
-	var sqlStatement = "INSERT INTO " + database.table
+	var sqlStatement = "\nINSERT INTO " + database.table
 						+ "\n(" + sqlColumns + ")"
 						+ "\n VALUES "
 						+ "\n(" + sqlValues + ")";
@@ -347,15 +353,78 @@ function InsertRecordImpl(database, record, res){
 
 	// running statement
 	db.run(sqlStatement, sqlParams, function(err,row){
-		if (err != null)
+		if (err != null){
+			// if there is any errors, returning stack
 			console.log(err);
+			res.json(err);
+		}else 
+			// returning response oK
+			res.json("ok");
 	});
 
+	// closing db connection
+	db.close();	
+}
+
+function UpdateRecordImpl(database, record, res){
+	// getting file path for this database
+	var file = getFile(database);
+	// requiring sqlite3 module
+	var sqlite3 = require("sqlite3").verbose();
+	// opening connection to database
+	var db = new sqlite3.Database(file);
 	
+	// defining variables that will make dynamic db requests
+	var sqlValues = "";
+	// sqlite3 works only with parametric arrays -> {}
+	var sqlParams = {};
+	
+	for (key in record){
+		// id will be ignored, because it appears in WHERE part only 
+		if (key != "id"){
+
+			// preparing sql values to be inserted into sql statement
+			if (sqlValues != "")
+				sqlValues += ",";			
+			sqlValues += key+"=@" + key;
+			
+			// preparing parametric array to be passed to sqlite3
+			sqlParams["@"+key] = record[key];
+		} else{
+			sqlParams["@"+key] = record[key];
+		}	
+	}	
+	
+	// preparing statement to be executed
+	var sqlStatement = "\nUPDATE " + database.table
+						+ "\nSET "
+						+ "\n" + sqlValues + " "
+						+ "\n WHERE id = @id";
+	
+	// shows insertions in the console 
+	if (SHOW_RECORD_UPDATES)
+		console.log(sqlStatement);
+
+	// running statement
+	if (sqlParams['@id'] && Object.keys(sqlParams).length > 1){
+		db.run(sqlStatement, sqlParams, function(err,row){
+			if (err != null){
+				// if there is any errors, returning stack
+				console.log(err);
+				res.json(err);
+			}else 
+				// returning response oK
+				res.json("ok");
+		});
+	} else{
+		res.json("ERR! No id provided or no rows to be changed.. Param count:" + Object.keys(sqlParams).length);
+	}
+		
 	
 	// closing db connection
 	db.close();	
 }
+
 
 function getFile(database){
 	// requiring file stream

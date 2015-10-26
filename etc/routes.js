@@ -61,10 +61,12 @@ function DefineRoutesImpl(varExpress){
 		});
 		
 		
-		// curl.exe -X POST --data "id=11" http://localhost:8000/GalwayCity_OpenData_CarParking/update
+		// curl.exe -X POST --data "id=1&x=0.05&y=-0.05&name=update works&no_spaces=999" http://localhost:8000/GalwayCity_OpenData_CarParking/update
 		varExpress.post( "/" + route + "/update", function(req,res){
-			console.log(req.body.id);
-			//res.json(req.body.id);
+			// requesting post-update.js file
+			var updateRecord = require('./post-update.js');
+			//running update function
+			updateRecord.UpdateRecord( database, req.body, res);
 		});
 		
 		
