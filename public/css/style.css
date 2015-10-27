@@ -4,8 +4,15 @@
 .round-container{
 	border-radius: 25px;
 	border: 2px solid #d3d3d3;
-	margin: 50px 50px 50px 50px;
+	margin-top: 50px;
+	margin-bottom: 50px;
 	max-width :500px;
+}
+.round-container-data{
+	border-radius: 25px;
+	border: 2px solid #d3d3d3;
+	margin-top : 50px;
+	min-width : 1400px;
 }
 
 .table-row-shrink{
@@ -23,8 +30,4 @@
 
 #table-content{
 	display:none;
-}
-
-#main-body{
-
 }

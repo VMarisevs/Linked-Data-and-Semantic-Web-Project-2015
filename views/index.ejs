@@ -23,6 +23,7 @@
 			
 			<script>
 				jsDatabases = <%- JSON.stringify(databases) %>;
+				currentDatabase = {};
 			</script>
 	</head>
 	<body>
@@ -41,7 +42,7 @@
 			</ul>
 		</div>
 		
-		<div class="container" id="main-body">
+		<div class="container">
 			
 			<% // Displaying all contents of API%>
 			<div id="home-content">
@@ -69,9 +70,7 @@
 				<% } %>
 			</div>
 			
-			<div id="table-content">
-				Hey this is table content
-			</div>
+			<div id="table-content" class="container round-container-data"></div>
 			
 		</div>
 		
