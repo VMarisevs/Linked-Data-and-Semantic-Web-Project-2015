@@ -160,7 +160,19 @@ function SelectRecordsImpl(database, res){
 }
 
 function InsertRecordImpl(database, record, res){
-	return false;
+	// getting file path for this database
+	var file = getFile(database);
+	// requiring pouchdb module
+	var PouchDB = require('pouchdb');
+	// defining database to connect to
+	var db = new PouchDB(file);
+	
+	db.post(record).then(function (response) {
+		res.json("ok");
+	}).catch(function (err) {
+		res.json(err);
+	});
+	
 }
 
 function UpdateRecordImpl(database, record, res){

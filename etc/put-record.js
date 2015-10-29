@@ -21,6 +21,12 @@ function InsertRecordImpl(database, record, res){
 			result = sqlite3db.InsertRecord(database, record, res);
 			break;
 			
+		case "pouchdb" :
+			// requiring pouch db connection file
+			var pouchdb = require('./pouchdbcon.js');
+			result = pouchdb.InsertRecord(database, record, res);
+			break;
+			
 		default :
 			// if database type wasn't defined, then it will run this commands
 			result = "Error getting database type! In 'put-record.js'.GetRecord. Type : '" + database.dbtype + "' is not defined";
