@@ -97,8 +97,7 @@ function CreateDb(database,  file){
 			"type" : "INTEGER PRIMARY KEY AUTOINCREMENT"
 			});
 
-		// user predefined columns in config.json
-		database.userdef = swap(database.columns);
+		
 		
 		// looping through first record and looking for columns that we will use to add into db
 		for (dataKey in data[0]){
@@ -459,17 +458,4 @@ function getFile(database){
 	// file path
 	var file = BIN_FOLDER + database.table + SQLITE3_BIN_TYPE;
 	return file;
-}
-
-
-/*
- *	[This function was borrowed] (http://stackoverflow.com/questions/23013573/swap-key-with-value-json)
- */
-// swap keys and values
-function swap(json){
-  var ret = {};
-  for(var key in json){
-    ret[json[key]] = key;
-  }
-  return ret;
 }

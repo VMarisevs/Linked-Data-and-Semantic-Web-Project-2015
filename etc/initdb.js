@@ -63,4 +63,20 @@ function doGlobalChanges(database){
 	 // slicing the .json file name, to get name without .json
 	 // for a table name and route
 	 database.table = database.file.slice(0,database.file.length-5);
+	 
+	 // user predefined columns in config.json
+		database.userdef = swap(database.columns);
+}
+
+
+/*
+ *	[This function was borrowed] (http://stackoverflow.com/questions/23013573/swap-key-with-value-json)
+ */
+// swap keys and values
+function swap(json){
+  var ret = {};
+  for(var key in json){
+    ret[json[key]] = key;
+  }
+  return ret;
 }

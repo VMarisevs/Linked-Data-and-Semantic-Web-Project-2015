@@ -77,7 +77,7 @@ In my API I have selected few datasets from [data.gov.ie](https://data.gov.ie/da
 
 #### Code borrowed
 
-I was looking for a fast way of swap keys and values, and found a solution, that I have used in my API. Whole solution is [here](http://stackoverflow.com/questions/23013573/swap-key-with-value-json) and I have used this code in *./etc/sqlite3db.js*
+I was looking for a fast way of swap keys and values, and found a solution, that I have used in my API. Whole solution is [here](http://stackoverflow.com/questions/23013573/swap-key-with-value-json) and I have used this code in *./etc/initdb.js*
 
 ```js
 // swap keys and values
