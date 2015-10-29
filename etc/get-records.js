@@ -21,6 +21,11 @@ function GetRecordsImpl(database, res){
 			result = sqlite3db.SelectRecords(database,  res);
 			break;
 			
+		case "pouchdb" :
+			var pouchdb = require('./pouchdbcon.js');
+			result = pouchdb.SelectRecords(database, res);
+			break;
+			
 		default :
 			// if database type wasn't defined, then it will run this commands
 			result = "Error getting database type! In 'get-records.js'.GetRecords. Type : '" + database.dbtype + "' is not defined";

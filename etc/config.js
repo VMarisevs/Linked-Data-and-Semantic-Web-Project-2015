@@ -17,6 +17,9 @@ GLOBAL.CONFIG_FILE = "./data/config.json";
 // sqlite3 binary files`
 GLOBAL.SQLITE3_BIN_TYPE = ".sqlite3";
 
+// pouch db folder
+GLOBAL.POUCHDB_PARENT_FOLDER = "pouch/";
+
 /*
  *	global folder structure
  */

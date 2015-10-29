@@ -9,19 +9,16 @@ module.exports = {
   
 };
 
-// running function to load configuration file .json
-LoadConfigFile();
-
 function LoadConfigFile(){
 	// Loading db sqlite3 module
 	var sqlite3db = require('./sqlite3db.js');
+	var pouchdb = require('./pouchdbcon.js');
 
 	// requiring file stream
 	var fs = require("fs");
 	
 	// loading configuration file with database descriptions	
 	DATABASES = JSON.parse(fs.readFileSync( CONFIG_FILE ,'utf8'));
-	
 	// looping through all defined databases, and calling functions to create binary files
 	DATABASES.forEach(function(database){
 		
@@ -38,6 +35,10 @@ function LoadConfigFile(){
 			case "sqlite3" :
 				// user defined to use sqlite3 database
 				sqlite3db.CreatingDbFile(database);
+				break;
+				
+			case "pouchdb" :
+				pouchdb.CreatingDbFile(database);
 				break;
 				
 			default :

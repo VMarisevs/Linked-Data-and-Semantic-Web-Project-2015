@@ -74,6 +74,7 @@ In my API I have selected few datasets from [data.gov.ie](https://data.gov.ie/da
 - [Swap keys and values in JavaScript array](http://stackoverflow.com/questions/23013573/swap-key-with-value-json) *used in ./etc/sqlite3db.js*
 - [Good practice of SQLite3](https://github.com/WebReflection/dblite) *used in ./etc/sqlite3db.js for inserting record set*
 - [Size of object](http://vancelucas.com/blog/count-the-number-of-object-keysproperties-in-nodejs/)
+- [Pouch db functions](http://pouchdb.com/api.html)
 
 #### Code borrowed
 
