@@ -31,6 +31,8 @@ function LoadConfigFile(){
 		 *
 		 */ 
 		
+		doGlobalChanges(database);
+		
 		switch (database.dbtype){
 			
 			case "sqlite3" :
@@ -50,4 +52,15 @@ function LoadConfigFile(){
 				break;
 		}
 	});
+}
+
+function doGlobalChanges(database){
+	/*
+	 *	WARN Global Changes!
+	 *	
+	 */
+	 
+	 // slicing the .json file name, to get name without .json
+	 // for a table name and route
+	 database.table = database.file.slice(0,database.file.length-5);
 }

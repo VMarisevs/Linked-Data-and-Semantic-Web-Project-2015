@@ -45,15 +45,6 @@ module.exports = {
 // If there is no file created, creating new one using function
 function CreatingDbFileImpl(database){
 	
-
-	// slicing the .json file name, to get name without .json
-	var FileName = database.file.slice(0,database.file.length-5);
-	/*
-	 *	WARN Global Changes!
-	 *	creating new variable with table name
-	 */
-		database.table = database.file.slice(0,database.file.length-5);
-	
 	// requiring file stream
 	var fs = require("fs");
 	var file = BIN_FOLDER + database.table + SQLITE3_BIN_TYPE;

@@ -41,7 +41,7 @@ GLOBAL.SHOW_INSERT_INTO_TABLE = false;
 GLOBAL.SHOW_RECORD_UPDATES = false;
 
 // show delete record statement in console
-GLOBAL.SHOW_DELETE_RECORD = true;
+GLOBAL.SHOW_DELETE_RECORD = false;
 
 // show requested records in console
 GLOBAL.SHOW_REQUESTED_RECORDS = false;
