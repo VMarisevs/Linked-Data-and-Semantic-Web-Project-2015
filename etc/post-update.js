@@ -20,7 +20,13 @@ function UpdateRecordImpl(database, record, res){
 			var sqlite3db = require('./sqlite3db.js');
 			result = sqlite3db.UpdateRecord(database, record, res);
 			break;
-			
+		
+		case "pouchdb" :
+			// requiring pouch db connection file
+			var pouchdb = require('./pouchdbcon.js');
+			result = pouchdb.UpdateRecord(database, record, res);
+			break;
+		
 		default :
 			// if database type wasn't defined, then it will run this commands
 			result = "Error getting database type! In 'post-update.js'.GetRecord. Type : '" + database.dbtype + "' is not defined";

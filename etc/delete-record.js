@@ -20,6 +20,12 @@ function DeleteRecordImpl(database, id, res){
 			var sqlite3db = require('./sqlite3db.js');
 			result = sqlite3db.DeleteRecord(database, id, res);
 			break;
+		
+		case "pouchdb" :
+			// requiring pouchdb db connection file
+			var pouchdb = require('./pouchdbcon.js');
+			result = pouchdb.DeleteRecord(database, id, res);
+			break;
 			
 		default :
 			// if database type wasn't defined, then it will run this commands

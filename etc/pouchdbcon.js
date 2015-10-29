@@ -98,9 +98,11 @@ function CreateDb(database,  file){
 		 *	overriding columns into better structure
 		 */
 			database.columns = columns;
+			database.userdef = swap(database.userdef);
 		
 		// if there is no records, inserting from dataset
 		if (doc.total_rows == 0){
+			console.log("Generating pouch database folder. -> " + file);
 			InsertRecordSet(db, database, data);
 		}
 	});
@@ -108,11 +110,28 @@ function CreateDb(database,  file){
 }
 
 function InsertRecordSet(db, database, data){
-	
-	data.forEach(function (row){
 
-		db.post(row).then(function (response) {
-		  // handle response
+	// for each record in dataset
+	data.forEach(function (row){
+		/*
+		 *	If user defined a different name for column
+		 *	Parsing the information from db and inserting a new row
+		 */
+		var newRecord = {};
+		// each defined column
+		database.columns.forEach(function (col){
+			// name of readed row from .json combined with name defined by user
+			var colname = (database.userdef[col.column]) ? database.userdef[col.column] : col.column;
+			newRecord[col.column] = row[colname];
+		});
+
+		// posting the record into pouchdb
+		db.post(newRecord).then(function (response) {			
+			// show records in console
+			if (SHOW_INSERT_INTO_TABLE){
+				console.log(newRecord);
+				console.log("Inserted into pouchdb");
+			}
 		}).catch(function (err) {
 		  console.log(err);
 		});
@@ -127,9 +146,12 @@ function SelectRecordImpl(database, id, res){
 	// defining database to connect to
 	var db = new PouchDB(file);
 	
-	
+	// get record by id
 	db.get(id).then(function (doc) {
-		//console.log(doc);
+		// show record in console
+		if (SHOW_REQUESTED_RECORDS)
+			console.log(doc);
+		
 		res.json(doc);
 	}).catch(function (err) {
 	  console.log(err);
@@ -147,10 +169,16 @@ function SelectRecordsImpl(database, res){
 	
 	// fetching all records
 	db.allDocs({include_docs: true, descending: true}, function(err, doc) {
+		
 		var result = [];
+		
 		// trying to get just doc information from whole record
 		for(key in doc.rows){
-			console.log(doc.rows[key].doc);
+			// show records in console
+			if (SHOW_REQUESTED_RECORDS)
+				console.log(doc.rows[key].doc);
+			
+			// pushing into array to make same structure as sqlite3
 			result.push(doc.rows[key].doc);
 		}
 		
@@ -167,7 +195,15 @@ function InsertRecordImpl(database, record, res){
 	// defining database to connect to
 	var db = new PouchDB(file);
 	
-	db.post(record).then(function (response) {
+	// post the new record, return ok or err to user
+	db.post(record).then(function (result) {
+		
+		// show in console inserted record
+		if (SHOW_INSERT_INTO_TABLE){			
+			console.log(record);
+			console.log("Inserted into pouchdb");
+		}
+		
 		res.json("ok");
 	}).catch(function (err) {
 		res.json(err);
@@ -176,15 +212,89 @@ function InsertRecordImpl(database, record, res){
 }
 
 function UpdateRecordImpl(database, record, res){
-	return false;
+	// getting file path for this database
+	var file = getFile(database);
+	// requiring pouchdb module
+	var PouchDB = require('pouchdb');
+	// defining database to connect to
+	var db = new PouchDB(file);
+	
+	
+	// get record that we want to update (we need _rev)
+	db.get(record['id']).then(function (doc) {
+		
+		/*
+		 *	creating temp object
+		 *	this object copies information from updated record
+		 *	to make it case insensitive
+		 */
+		
+		var tempRecord = {};
+		for (key in record){
+			// setting key to lower case
+			var lowerCaseKey = key.toLowerCase();
+			// creating key value object with lowercase key
+			tempRecord[lowerCaseKey] = record[key];
+		}
+		
+		// new record that will be passed
+		var newRecord = {};
+		database.columns.forEach(function(col){
+			// creating an object based on passed column names
+			newRecord[col.column] = (tempRecord[col.column.toLowerCase()]) ? tempRecord[col.column.toLowerCase()] : doc[col.column];
+		});
+		
+		// passing _rev to to new record
+		newRecord["_rev"] = doc["_rev"];
+		
+		if (SHOW_RECORD_UPDATES)
+			console.log(newRecord);
+		
+		// updating record
+		db.put(newRecord);
+		
+		// returning ok to a user
+		res.json("ok");
+		
+	}).catch(function (err) {
+		// returning error
+		res.json(err);
+	});
 }
 
 function DeleteRecordImpl(database, id, res){
-	return false;	
+	// getting file path for this database
+	var file = getFile(database);
+	// requiring pouchdb module
+	var PouchDB = require('pouchdb');
+	// defining database to connect to
+	var db = new PouchDB(file);
+	
+	// get record that we want to delete (we need _rev)
+	db.get(id).then(function (doc) {
+		// removing the record
+		db.remove(doc)
+		// returning ok to a user
+		res.json("ok");
+		
+	}).catch(function (err) {
+		// returning error
+		res.json(err);
+	});
+	
 }
 
 function getFile(database){
 	// file path
 	var file = BIN_FOLDER + POUCHDB_PARENT_FOLDER + database.table;
 	return file;
+}
+
+// swap keys and values
+function swap(json){
+  var ret = {};
+  for(var key in json){
+    ret[json[key]] = key;
+  }
+  return ret;
 }
