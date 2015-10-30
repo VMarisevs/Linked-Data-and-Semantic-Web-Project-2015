@@ -270,8 +270,8 @@ function SelectRecordImpl(database, id, res){
 		// displaying request in console, can be redefined in config.js
 		if (SHOW_REQUESTED_RECORDS)
 			console.log(row);
-		
-		res.json(row);
+		// was a bug, returns encapsulated object
+		res.json(row[0]);
 	});
 	// closing db connection
 	db.close();	

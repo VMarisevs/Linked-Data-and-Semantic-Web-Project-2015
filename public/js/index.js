@@ -61,11 +61,21 @@ function displayDatabaseData(data,table){
 	var bodyInnerHTML = "";
 	var headerInnerHTML = "";
 	var varTable = getTableInfo(table);
+	var idType;
 	
 	// generating table header using html tags
-	for (key in varTable.columns){
-		headerInnerHTML += '<th>' + varTable.columns[key].column + '</th>';
-	}
+	varTable.columns.forEach(function (column){
+		headerInnerHTML += '<th>' + column.column + '</th>';
+		if (column.column == "id" && column.type == "INTEGER PRIMARY KEY AUTOINCREMENT"){
+			idType = column.column;
+		} else if (column.column == "_id" && column.type == "String"){
+			idType = column.column;
+		}
+	});
+
+	
+	// one empty header for column edit action button
+	headerInnerHTML += "<th></th>";
 	
 	// wrapping around table thead tags
 	headerInnerHTML = '<thead class="table"><tr>' + headerInnerHTML + '</tr></thead>';
@@ -78,6 +88,11 @@ function displayDatabaseData(data,table){
 			tempInnerHTML += '<td>' + record[column.column] + '</td>';
 		});
 		
+		// action button that will contains info about request
+		tempInnerHTML += "<td><a href=\"#\" onclick=\"showRecord('"
+							+ record[idType] +"','"
+							+ table +"');\">Edit</a></td>";
+		// wrapping around row
 		varInnerHTML.push('<tr>' + tempInnerHTML + '</tr>');
 	});
 
@@ -106,11 +121,83 @@ function getTableInfo(table){
 }
 
 
+// get record to display origin data to edit
+function showRecord(record_id, table){
+	// ajax call to get a row based on id to fill in the form
+	$.ajax({
+		url: '/' + table + '/' + record_id,
+		type: 'GET',
+		success: function(data) {
+			var msg = "";
+			if (data == "Error"){
+				msg = "This record doesn't exists...";
+				alert(msg);	
+			}						
+			else {
+				// received record is received
+				currentRecord = data;	
+				//alert(JSON.stringify(currentRecord));
+				var msg = showRecordHtml(currentRecord,table);
+				$("#edit-dialog").html(msg);
+				
+				$("#edit-dialog").dialog("open");				
+			}
+								
+		}
+	});
 
+}
 
+function showRecordHtml(record,table){
+	var recordHtml = "";
+	
+	for (key in record){
+		if (key != "id" &&  key != "_id" && key != "_rev"){
+			recordHtml += "<tr><td>" + key 
+							+"</td><td><input type='text' id='"
+							+ table + "-" + key + "' value='" + record[key] +"'></td></tr>";
+		} else{
+			recordHtml += "<tr><td></td><td><input type='hidden' id='"
+							+ table + "-" + key + "' value='"+record[key]+"'></td></tr>";
+			
+		}
+	}
+ 
+	recordHtml +=	"<tr><td></td><td>"
+					+"<a href=\"#\" onclick=\"saveRecord('"
+						//	+ JSON.stringify(record) +"','"
+							+ table +"');\">Save</a>"
+					+"</td></tr>";
 
+	
+	recordHtml = "<table>" + recordHtml + "</table>";
+	
+	return recordHtml;
+}
 
+function saveRecord( table){
+	// collecting all information based on id 
+	
+	var newRecord = {};
+	
+	for (key in currentRecord){
+		var elementId = "#" + table + "-" + key;
+		newRecord[key] = $(elementId).val();
+	}
+	
+	var params = JSON.stringify(newRecord);
 
+	$.ajax({
+			url: "/" + table + "/update",
+			type: 'POST',
+			data: 	params,
+			success: function(data) {
+				alert("Saved");
+			}
+		});
+	
+	$("#edit-dialog").dialog("close");
+}
 
 
 

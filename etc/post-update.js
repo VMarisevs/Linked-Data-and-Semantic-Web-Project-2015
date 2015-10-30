@@ -11,7 +11,6 @@ module.exports = {
 
 function UpdateRecordImpl(database, record, res){
 	var result;
-	
 	// based on database type selecting which to connect to
 	switch(database.dbtype){
 		

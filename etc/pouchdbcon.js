@@ -219,9 +219,9 @@ function UpdateRecordImpl(database, record, res){
 	// defining database to connect to
 	var db = new PouchDB(file);
 	
-	
+	console.log(record["_id"]);
 	// get record that we want to update (we need _rev)
-	db.get(record['id']).then(function (doc) {
+	db.get(record['_id']).then(function (doc) {
 		
 		/*
 		 *	creating temp object

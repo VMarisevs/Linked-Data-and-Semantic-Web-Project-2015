@@ -38,13 +38,13 @@ GLOBAL.DATASET_FOLDER = "./data/datasets/";
 GLOBAL.SHOW_CREATE_TABLE = false;
 
 // show insert statements in console
-GLOBAL.SHOW_INSERT_INTO_TABLE = false;
+GLOBAL.SHOW_INSERT_INTO_TABLE = true;
 
 // show record updates in console
-GLOBAL.SHOW_RECORD_UPDATES = false;
+GLOBAL.SHOW_RECORD_UPDATES = true;
 
 // show delete record statement in console
-GLOBAL.SHOW_DELETE_RECORD = false;
+GLOBAL.SHOW_DELETE_RECORD = true;
 
 // show requested records in console
 GLOBAL.SHOW_REQUESTED_RECORDS = false;

@@ -69,7 +69,13 @@ function DefineRoutesImpl(varExpress){
 			// requesting post-update.js file
 			var updateRecord = require('./post-update.js');
 			//running update function
-			updateRecord.UpdateRecord( database, req.body, res);
+			console.log(req.body);
+			for (record in req.body){
+				var rec = JSON.parse(record);
+				console.log(rec["_id"]);
+				updateRecord.UpdateRecord( database, rec, res);
+			}
+			
 		});
 		
 		
