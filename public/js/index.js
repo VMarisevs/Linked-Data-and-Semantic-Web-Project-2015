@@ -72,13 +72,51 @@ function displayDatabaseData(data,table){
 			idType = column.column;
 		}
 	});
-
 	
-	// one empty header for column edit action button
-	headerInnerHTML += "<th></th>";
+	// one empty header for column edit/delete action button
+	headerInnerHTML += "<th>&nbsp;</th>" + "<th>&nbsp;</th>";
+
 	
 	// wrapping around table thead tags
 	headerInnerHTML = '<thead class="table"><tr>' + headerInnerHTML + '</tr></thead>';
+	
+	var record = [];
+	// generating table header using html tags
+	varTable.columns.forEach(function (column){
+		var print = "";
+		switch (column.column){
+			case "id":
+				print = "&nbsp;";
+				break;
+			case "_id":
+				print = "&nbsp;";
+				break;
+			default:
+				var coltype;
+				
+				switch(column.type){
+					case "FLOAT" : 
+						coltype = "type=\"number\" step=\"0.0000000001\"";	
+						break
+					default:
+						coltype = "type=\"text\"";
+						break;
+				}
+				
+				print = "<input " + coltype + " id=\"INSERT-" + table + "-" + column.column + "\">";
+				record.push(column.column);
+				break;
+		}
+		
+		headerInnerHTML += '<td>' + print + '</td>';
+	});	
+	
+	headerInnerHTML += "<td><a button type=\"button\" class=\"btn btn-success\" onclick=\"insertRecord('"
+							+ record +"','"
+							+ table +"');\">Insert</button></td>";
+	
+	
+	headerInnerHTML = '<tr>' + headerInnerHTML + '</tr>';
 	
 	// generating table rows using html tags
 	data.forEach(function(record){
@@ -89,9 +127,15 @@ function displayDatabaseData(data,table){
 		});
 		
 		// action button that will contains info about request
-		tempInnerHTML += "<td><a href=\"#\" onclick=\"showRecord('"
+		tempInnerHTML += "<td><a button type=\"button\" class=\"btn btn-warning\" onclick=\"showRecord('"
 							+ record[idType] +"','"
-							+ table +"');\">Edit</a></td>";
+							+ table +"');\">Edit</button></td>";
+		
+		tempInnerHTML += "<td><a button type=\"button\" class=\"btn btn-danger\" onclick=\"deleteRecord('"
+							+ record[idType] +"','"
+							+ table +"');\">Delete</button></td>";
+
+		
 		// wrapping around row
 		varInnerHTML.push('<tr>' + tempInnerHTML + '</tr>');
 	});
@@ -148,6 +192,7 @@ function showRecord(record_id, table){
 
 }
 
+// preparing selected record
 function showRecordHtml(record,table){
 	var recordHtml = "";
 	
@@ -175,7 +220,8 @@ function showRecordHtml(record,table){
 	return recordHtml;
 }
 
-function saveRecord( table){
+// function to save record in db
+function saveRecord(table){
 	// collecting all information based on id 
 	
 	var newRecord = {};
@@ -192,16 +238,113 @@ function saveRecord( table){
 			type: 'POST',
 			data: 	params,
 			success: function(data) {
-				alert("Saved");
+				showNotification("Record Updated " + JSON.stringify(params));
+				MoveBookmark( table + '-button');
 			}
 		});
 	
 	$("#edit-dialog").dialog("close");
 }
 
+// function to delete record from db
+function deleteRecord(record_id,table){
+	
+	
+	var answer = confirm("Do You want delete record" 
+						//	+" with id:" + record_id 
+							+ "?");
+	// if user confirms
+	if (answer){
+		
+		var params = { id : record_id};
+		
+		$.ajax({
+			url: "/" + table + "/delete",
+			type: 'DELETE',
+			data: 	params,
+			success: function(data) {
+				showNotification("Record deleted! " + JSON.stringify(params));
+				MoveBookmark( table + '-button');
+			}
+		});
+	}
+	
+}
+
+// function to insert record into db
+function insertRecord(record,table){
+	// getting array in string format
+	var columns = record.split(',');
+	
+	// getting table column types
+	var tableInfo = getTableInfo(table);
+	var columnTypesDef = tableInfo["columns"];
+	var columnTypes = {};
+	
+	
+	for (var i = 0; i < columnTypesDef.length; i++){
+		columnTypes[columnTypesDef[i].column] = columnTypesDef[i].type;
+	}
+	
+	// if no data was inserted, 
+	var valid = [];
+	var validResult = false;
+	// set them all false
+	for (var i = 0; i < columnTypes.size; i++){
+		valid.push(0);
+	}
+	
+	// declaring new record object array
+	var newRecord = {};
+	// looping through html elements to pick up information
+	for (var i = 0; i < columns.length; i++){
+		// element id
+		var elementId = "#INSERT-" + table + "-" + columns[i];
+		// getting value
+		newRecord[columns[i]] = $(elementId).val();
+		
+		// if record is not empty
+		if (newRecord[columns[i]] != "")
+			valid[i] = true;
+			
+	}
+	
+	// making a result
+	for (var i = 0; i < valid.length; i++){
+		if (valid[i] == null){
+			validResult = false;
+			break;
+		} else{
+			validResult = true;
+		}
+	}
+	
+	
+	
+	if (validResult){
+		var params = newRecord;		
+		$.ajax({
+				url: "/" + table + "/insert",
+				type: 'PUT',
+				data: 	params,
+				success: function(data) {
+					// refreshing the page
+					showNotification("Insert Record " + JSON.stringify(params));
+					MoveBookmark( table + '-button');
+				}
+			});
+	}
+	
+}
 
 
-
-
+function showNotification(text){
+	
+	$("#notification").fadeIn("slow").html(text);
+	
+	setTimeout(function(){ 
+			$("#notification").fadeOut("slow");						
+	}, 2000);
+}
 
 

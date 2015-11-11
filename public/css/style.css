@@ -8,11 +8,12 @@
 	margin-bottom: 50px;
 	max-width :500px;
 }
-.round-container-data{
+/* remove - to return changes */
+.round-container-data-{
 	border-radius: 25px;
 	border: 2px solid #d3d3d3;
 	margin-top : 50px;
-	min-width : 1400px;
+	min-width : 100%;
 }
 
 .table-row-shrink{
@@ -26,6 +27,33 @@
 
 .menu-ul{
 	display: inline-block;
+}
+
+
+#notification {
+    position:fixed;
+    top:0px;
+    width:100%;
+    z-index:105;
+    text-align:center;
+    font-weight:normal;
+    font-size:14px;
+    font-weight:bold;
+    color:white;
+    background-color:#FF7800;
+    padding:5px;
+}
+#notification span.dismiss {
+    border:2px solid #FFF;
+    padding:0 5px;
+    cursor:pointer;
+    float:right;
+    margin-right:10px;
+}
+#notification a {
+    color:white;
+    text-decoration:none;
+    font-weight:bold
 }
 
 #table-content{
