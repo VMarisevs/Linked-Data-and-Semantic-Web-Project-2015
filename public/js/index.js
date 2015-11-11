@@ -127,11 +127,11 @@ function displayDatabaseData(data,table){
 		});
 		
 		// action button that will contains info about request
-		tempInnerHTML += "<td><a button type=\"button\" class=\"btn btn-warning\" onclick=\"showRecord('"
+		tempInnerHTML += "<td><button type=\"button\" class=\"btn btn-warning\" onclick=\"showRecord('"
 							+ record[idType] +"','"
 							+ table +"');\">Edit</button></td>";
 		
-		tempInnerHTML += "<td><a button type=\"button\" class=\"btn btn-danger\" onclick=\"deleteRecord('"
+		tempInnerHTML += "<td><button type=\"button\" class=\"btn btn-danger\" onclick=\"deleteRecord('"
 							+ record[idType] +"','"
 							+ table +"');\">Delete</button></td>";
 
@@ -209,9 +209,8 @@ function showRecordHtml(record,table){
 	}
  
 	recordHtml +=	"<tr><td></td><td>"
-					+"<a href=\"#\" onclick=\"saveRecord('"
-						//	+ JSON.stringify(record) +"','"
-							+ table +"');\">Save</a>"
+						+ "<button type=\"button\" class=\"btn btn-success\" onclick=\"saveRecord('"
+						+ table +"');\">Save</button>"
 					+"</td></tr>";
 
 	
