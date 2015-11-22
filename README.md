@@ -34,7 +34,7 @@ In my API I have selected few datasets from [data.gov.ie](https://data.gov.ie/da
 >
 > - * curl.exe -X PUT --data "x=1&y=2&name=new Record&type=some Type&no_spaces=200&lat=12&long=33&eastitm=32&northitm=22&eastig=321&northig=432" http://localhost:8000/GalwayCity_OpenData_CarParking/insert * - *Curl command that inserts new record into default database. In case row is inserted, returns "ok" as response.*
 >
-> - * curl.exe -X POST --data "id=1&x=0.05&y=-0.05&name=update works&no_spaces=999" http://localhost:8000/GalwayCity_OpenData_CarParking/update * - *Curl command that updates the record based on provided record id. Returns rows changed. In case non existing id entered, will return 0, else will return 1, because sql statement won't allow to change more than 1 row.*
+> - * curl.exe -X POST --data "{\"id\":\"1\",\"x\":\"0.05\",\"y\":\"-0.05\",\"name\":\"update works\"}" http://localhost:8000/GalwayCity_OpenData_CarParking/update * - *Curl command that updates the record based on provided record id. Returns rows changed. In case non existing id entered, will return 0, else will return 1, because sql statement won't allow to change more than 1 row.*
 >
 > - * curl.exe -X DELETE --data "id=35" http://localhost:8000/GalwayCity_OpenData_CarParking/delete * - *Curl command that deletes record based on provided id. Returns rows affected as a response. Id is important to run this query, in case no id entered, it won't let you truncate the table. User is allowed to remove 1 record at execution time.*
 >
